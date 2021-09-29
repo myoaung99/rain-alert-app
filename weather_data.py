@@ -21,13 +21,23 @@ data = response.json()
 # with open('./data.py', 'w') as file:
 #     file = file.write(f'{data}')
 
-condition_code = []
+
+# def get_12_hour() -> None:
+#     for i in range(0, 12):
+#         condition_code = data['hourly'][i]['weather'][0]['id']
 
 
-def get_12_hour() -> None:
-    for i in range(0, 12):
-        condition_code.append(data['hourly'][i]['weather'][0]['id'])
+# get_12_hour()
+# print(condition_code)
 
+will_rain = False
 
-get_12_hour()
-print(condition_code)
+twelve_hr_condition = data['hourly'][:12]
+
+for hourly_data in twelve_hr_condition:
+    condition_code = hourly_data['weather'][0]['id']
+    if int(condition_code) < 700:
+        will_rain = True
+
+if will_rain:
+    print('Bring your Umbrella.')
