@@ -1,17 +1,32 @@
+import smtplib
 import requests
-from twilio.rest import Client
+import imghdr
+from email.message import EmailMessage
+
 
 API = '3244151f9f7031286a9b45b59763f091'
 LAT = 21.803160
 LON = 96.017548
 END_POINT = 'https://api.openweathermap.org/data/2.5/onecall'
 
-test_lat = 44.434850
-test_long = 7.589240
+USER = 'your mail'
+PASS = 'your pass()'
 
-account_sid = "AC543d49d26bc5e60d64c3d3bd9fac8b90"
-auth_token = "f132f6208656e5c65f3b4207b307e360"
-my_phone = '+95 9 952 437129'
+msg = EmailMessage()
+msg['Subject'] = 'မိုးသတိပေးချက် ⚠️'
+msg['From'] = USER
+msg['To'] = USER
+msg.set_content(
+    'ဒီနေ့ နောက်(၁၂)နာရီအတွင်းမိုးရွာဖို့ ရှိတယ်နော် အပြင်သွားရင် ☔ ယူသွားဖို့ မမေ့ပါနဲ့')
+
+with open('alert.png', 'rb') as file:
+    file_data = file.read()
+    file_type = imghdr.what(file.name)
+    file_name = file.name
+
+
+msg.add_attachment(file_data, maintype='image',
+                   subtype=file_type, filename=file_name)
 
 
 params = {
@@ -32,19 +47,13 @@ weather_data = data['hourly'][:12]
 
 for hourly_data in weather_data:
     condition_code = hourly_data['weather'][0]['id']
-    print(condition_code)
     if int(condition_code) < 700:
         will_rain = True
 
 if will_rain:
-    client = Client(account_sid, auth_token)
-
-    message = client.messages.create(
-        body="It is going to rain today. Don't forget to bring an ☔",
-        from_='+12312723944',
-        to=my_phone
-    )
+    connection = smtplib.SMTP(host="smtp.gmail.com")
+    connection.starttls()
+    connection.login(user=USER, password=PASS)
+    connection.send_message(msg)
+    connection.close()
     print("It is going to rain.")
-
-
-print(message.status)
