@@ -5,8 +5,7 @@ from email.message import EmailMessage
 
 
 API = '3244151f9f7031286a9b45b59763f091'
-LAT = 21.803160
-LON = 96.017548
+LAT = 'your location'
 END_POINT = 'https://api.openweathermap.org/data/2.5/onecall'
 
 USER = 'your mail'
